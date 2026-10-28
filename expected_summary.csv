@@ -1,0 +1,4 @@
+run_id,method,budget,best_loss,improvement,improvement_per_budget
+r1,synthetic-a,10,60,40,4
+r2,synthetic-b,20,60,40,2
+r3,synthetic-zero,0,50,0,

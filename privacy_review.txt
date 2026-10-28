@@ -1,0 +1,5 @@
+PASS: explicitly allowlisted public source/evidence files were scanned.
+No original machine/user names, absolute private host paths or detected credential literals.
+No runtime binaries, clusters, bootstrap files or operational/installation logs included.
+Synthetic input matches the deterministic fixture. Original private artifacts preserved.
+This is a bounded pattern scan and manual source review, not a guarantee against every secret format.

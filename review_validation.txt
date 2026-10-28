@@ -1,0 +1,11 @@
+Public-copy reference review — 2026-10-01 UTC
+
+PASS: fixture counts; Decimal oracle; empty input; deterioration; CSV; notebook code syntax.
+These are Python checks, not PostgreSQL execution.
+PASS: all CSV fields match Decimal reference; ratios 4 / 2 / NULL.
+PASS: 11 retained SQL notices, expected SQLSTATEs and retained 1/3/4 counts.
+PASS: five matching notebook code cells, ordered counts and code syntax.
+These are static/reference checks. PostgreSQL and Jupyter were not rerun.
+PASS: eight core source/data files are byte-identical to the private evidence ZIP.
+PASS: four separately supplied artifacts exactly match their ZIP counterparts.
+PASS: private manifest hashes match each listed file present; two vendor support files were not bundled.

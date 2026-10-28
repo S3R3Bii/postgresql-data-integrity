@@ -1,0 +1,132 @@
+                                 version                                 | current_database 
+-------------------------------------------------------------------------+------------------
+ PostgreSQL 18.6 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit | postgres
+(1 row)
+
+CREATE SCHEMA
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE PROCEDURE
+CREATE FUNCTION
+psql:[project]/schema.sql:2: NOTICE:  schema "sql_proof" already exists, skipping
+psql:[project]/schema.sql:7: NOTICE:  relation "batch" already exists, skipping
+psql:[project]/schema.sql:15: NOTICE:  relation "run" already exists, skipping
+psql:[project]/schema.sql:23: NOTICE:  relation "checkpoint" already exists, skipping
+CALL
+BEGIN
+DO
+CREATE FUNCTION
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ expect_rejection 
+------------------
+ 
+(1 row)
+
+ROLLBACK
+psql:[project]/tests.sql:35: NOTICE:  PASS exact replay idempotency
+psql:[project]/tests.sql:35: NOTICE:  PASS function hand calculation and zero budget
+psql:[project]/tests.sql:35: NOTICE:  PASS no-checkpoint fallback
+psql:[project]/tests.sql:35: NOTICE:  PASS empty and unknown batch
+psql:[project]/tests.sql:35: NOTICE:  PASS known CTE/window result
+psql:[project]/tests.sql:62: NOTICE:  PASS rejection and rollback: test-orphan (SQLSTATE P0001)
+psql:[project]/tests.sql:64: NOTICE:  PASS rejection and rollback: test-duplicate-run (SQLSTATE 23505)
+psql:[project]/tests.sql:66: NOTICE:  PASS rejection and rollback: test-late-failure (SQLSTATE 23514)
+psql:[project]/tests.sql:68: NOTICE:  PASS rejection and rollback: test-duplicate-checkpoint (SQLSTATE 23505)
+psql:[project]/tests.sql:69: NOTICE:  PASS rejection and rollback: synthetic-v1 (SQLSTATE P0001)
+psql:[project]/tests.sql:70: NOTICE:  PASS rejection and rollback: test-shape (SQLSTATE P0001)
+ANALYZE
+ANALYZE
+ run_id | step | loss | best_so_far | best_loss_change 
+--------+------+------+-------------+------------------
+ r1     |    1 |   80 |          80 |                 
+ r1     |    2 |   60 |          60 |              -20
+ r2     |    1 |   90 |          90 |                 
+ r2     |    2 |   60 |          60 |              -30
+(4 rows)
+
+                                                        QUERY PLAN                                                         
+---------------------------------------------------------------------------------------------------------------------------
+ Subquery Scan on summary  (cost=2.16..2.27 rows=3 width=116) (actual time=0.023..0.029 rows=3.00 loops=1)
+   Buffers: shared hit=2
+   ->  HashAggregate  (cost=2.16..2.24 rows=3 width=121) (actual time=0.023..0.028 rows=3.00 loops=1)
+         Group Key: r.run_id
+         Batches: 1  Memory Usage: 32kB
+         Buffers: shared hit=2
+         ->  Hash Right Join  (cost=1.08..2.14 rows=4 width=30) (actual time=0.013..0.016 rows=5.00 loops=1)
+               Hash Cond: (c.run_id = r.run_id)
+               Buffers: shared hit=2
+               ->  Seq Scan on checkpoint c  (cost=0.00..1.04 rows=4 width=8) (actual time=0.002..0.003 rows=4.00 loops=1)
+                     Buffers: shared hit=1
+               ->  Hash  (cost=1.04..1.04 rows=3 width=25) (actual time=0.007..0.007 rows=3.00 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared hit=1
+                     ->  Seq Scan on run r  (cost=0.00..1.04 rows=3 width=25) (actual time=0.004..0.005 rows=3.00 loops=1)
+                           Filter: (batch_id = 'synthetic-v1'::text)
+                           Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=245
+ Planning Time: 0.301 ms
+ Execution Time: 0.076 ms
+(21 rows)
+
+                                                            QUERY PLAN                                                            
+----------------------------------------------------------------------------------------------------------------------------------
+ WindowAgg  (cost=2.18..2.35 rows=4 width=76) (actual time=0.022..0.025 rows=4.00 loops=1)
+   Window: w1 AS (PARTITION BY r.run_id ORDER BY c.step)
+   Storage: Memory  Maximum Storage: 17kB
+   Buffers: shared hit=2
+   ->  WindowAgg  (cost=2.18..2.27 rows=4 width=44) (actual time=0.020..0.022 rows=4.00 loops=1)
+         Window: w1 AS (PARTITION BY r.run_id ORDER BY c.step ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+         Storage: Memory  Maximum Storage: 17kB
+         Buffers: shared hit=2
+         ->  Sort  (cost=2.18..2.19 rows=4 width=17) (actual time=0.017..0.017 rows=4.00 loops=1)
+               Sort Key: r.run_id, c.step
+               Sort Method: quicksort  Memory: 25kB
+               Buffers: shared hit=2
+               ->  Hash Join  (cost=1.08..2.14 rows=4 width=17) (actual time=0.012..0.014 rows=4.00 loops=1)
+                     Hash Cond: (c.run_id = r.run_id)
+                     Buffers: shared hit=2
+                     ->  Seq Scan on checkpoint c  (cost=0.00..1.04 rows=4 width=12) (actual time=0.003..0.003 rows=4.00 loops=1)
+                           Buffers: shared hit=1
+                     ->  Hash  (cost=1.04..1.04 rows=3 width=8) (actual time=0.005..0.005 rows=3.00 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           Buffers: shared hit=1
+                           ->  Seq Scan on run r  (cost=0.00..1.04 rows=3 width=8) (actual time=0.002..0.003 rows=3.00 loops=1)
+                                 Filter: (batch_id = 'synthetic-v1'::text)
+                                 Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=4
+ Planning Time: 0.088 ms
+ Execution Time: 0.040 ms
+(27 rows)
+
+
+PASS actual PostgreSQL CSV independently reconciled to Decimal oracle.
+
+PASS full pipeline repeated; persistent counts 1 batch / 3 runs / 4 checkpoints.
+DO

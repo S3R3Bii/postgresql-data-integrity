@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PostgreSQL proof · Executed companion</title><style>
+:root{color-scheme:light;--ink:#182a38;--muted:#536876;--line:#d9e3e8;--blue:#125c75;--bg:#f6f8fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,sans-serif}main{max-width:1040px;padding:48px 28px 80px;margin:auto}header{padding:0 0 28px;border-bottom:1px solid var(--line)}.eyebrow{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.14em;color:var(--blue)}h1{font-size:40px;line-height:1.18;margin:12px 0 16px;letter-spacing:-.03em}h2{margin:38px 0 12px;font-size:23px}h3{font-size:18px;margin:25px 0 8px}p{margin:8px 0 13px}.lede{color:var(--muted);max-width:800px;font-size:18px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.metric{background:white;border:1px solid var(--line);border-radius:12px;padding:17px 20px}.metric strong{display:block;font-size:31px;line-height:1.25}.metric span{font-size:13px;color:var(--muted)}.notice{background:#e8f1f5;border-left:4px solid var(--blue);padding:14px 18px;border-radius:4px;color:#274c5e;font-size:14px}table{width:100%;border-collapse:collapse;background:white;margin:14px 0 24px;font-variant-numeric:tabular-nums}th,td{text-align:right;padding:12px 14px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}.cell{margin:20px 0}.cell-label{color:var(--muted);font-size:12px;font-weight:700;margin:0 0 5px}pre{margin:0 0 8px;white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;background:#eaf0f4;border:1px solid #d7e1e8;border-radius:8px;padding:17px;font:13px/1.65 ui-monospace,Consolas,monospace}.output{background:#edf4ef;border-color:#d1e2d5;color:#24472b}.empty{color:var(--muted);font-size:13px}.section{padding-top:8px}a{color:var(--blue)}footer{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;font-size:13px;color:var(--muted)}@media(max-width:600px){main{padding:28px 18px 50px}h1{font-size:32px}.metrics{gap:8px}.metric{padding:13px 10px}.metric strong{font-size:25px}th,td{padding:9px 7px}table{font-size:13px}}
+</style></head><body><main><header><div class="eyebrow">Independent project · AI-assisted · Synthetic data</div><h1>Transactional PostgreSQL<br>proof project</h1><p class="lede">A bounded, inspectable example of exact-replay loading, SQL summaries and checkpoint analysis, with retained execution evidence.</p></header><section aria-label="Recorded evidence"><div class="metrics"><div class="metric"><strong>11</strong><span>SQL checks recorded as passed</span></div><div class="metric"><strong>3 / 4</strong><span>Synthetic runs / checkpoints</span></div><div class="metric"><strong>5</strong><span>Sequential Python code cells</span></div></div><p class="notice">The retained run reports PostgreSQL 18.6. Notebook cells ran with Python 3.10.11 in one shared namespace, not a Jupyter kernel. This review checked the source and evidence without rerunning PostgreSQL. No production or scale claim is made.</p><h2>Observed database export</h2><p>Every exported field matches the separate Python Decimal reference. Zero budget yields NULL.</p><table><thead><tr><th>Run</th><th>Budget</th><th>Best loss</th><th>Improvement</th><th>Improvement / budget</th></tr></thead><tbody>
+<tr><td>r1</td><td>10</td><td>60</td><td>40</td><td>4</td></tr>
+<tr><td>r2</td><td>20</td><td>60</td><td>40</td><td>2</td></tr>
+<tr><td>r3</td><td>0</td><td>50</td><td>0</td><td>NULL</td></tr>
+</tbody></table></section><section class="section" aria-label="Notebook walkthrough"><div class="eyebrow">Retained executed notebook</div>
+<h2>Synthetic optimizer SQL companion</h2>
+<h3>Goal</h3>
+<p>Independent AI-assisted proof exercise using three invented optimizer runs and four checkpoints. SQL source and retained outputs make the design inspectable. This is independent proof work, not employment or production experience.</p>
+<h3>Setup</h3>
+<p>Use this folder as the working directory. Python uses its standard library. Database execution requires an existing authorized local PostgreSQL database and psql on PATH; this public package includes no binaries, credentials or cluster.</p>
+<h3>Execution record</h3>
+<p>Five code cells were executed top-to-bottom in one Python 3.10.11 namespace on 2026-10-01. This was a standard-library runner, not a Jupyter kernel or nbclient. Retained database outputs report PostgreSQL 18.6. Host paths have been redacted; computational source and numeric results are unchanged. This public review did not rerun the PostgreSQL pipeline. Timing values below belong to the notebook&#x27;s pass; postgres_results.txt contains the later repeated pass.</p>
+<div class="cell"><div class="cell-label">CODE CELL 1</div><pre>from pathlib import Path
+import companion
+assert Path(&#x27;schema.sql&#x27;).exists(), &#x27;Start notebook in sql-proof directory&#x27;
+</pre>
+</div>
+<h3>Steps</h3>
+<h3>Prepare synthetic inputs</h3>
+<p>Input grain: run and numbered checkpoint. Loss is minimized; allocation is per run. See README for batch identity, limits and transaction boundaries.</p>
+<div class="cell"><div class="cell-label">CODE CELL 2</div><pre># Deterministic data; writes only fixture, seed SQL and expected CSV.
+companion.prepare()
+payload = companion.fixture()
+print(len(payload[&#x27;runs&#x27;]), &#x27;runs;&#x27;, len(payload[&#x27;checkpoints&#x27;]), &#x27;checkpoints&#x27;)
+</pre>
+<div class="cell-label">RETAINED STDOUT</div><pre class="output">3 runs; 4 checkpoints
+</pre>
+</div>
+<h3>Independent hand calculation</h3>
+<p>For r1, (100 - 60) / 10 = 4. For r2, (100 - 60) / 20 = 2. r3 has no checkpoints and zero budget: best loss 50, gain 0, ratio NULL. The table is a Python oracle, not observed database output.</p>
+<div class="cell"><div class="cell-label">CODE CELL 3</div><pre>for row in companion.oracle(payload):
+    print(row)
+</pre>
+<div class="cell-label">RETAINED STDOUT</div><pre class="output">{&#x27;run_id&#x27;: &#x27;r1&#x27;, &#x27;method&#x27;: &#x27;synthetic-a&#x27;, &#x27;budget&#x27;: 10, &#x27;best_loss&#x27;: 60, &#x27;improvement&#x27;: Decimal(&#x27;40&#x27;), &#x27;improvement_per_budget&#x27;: Decimal(&#x27;4&#x27;)}
+{&#x27;run_id&#x27;: &#x27;r2&#x27;, &#x27;method&#x27;: &#x27;synthetic-b&#x27;, &#x27;budget&#x27;: 20, &#x27;best_loss&#x27;: 60, &#x27;improvement&#x27;: Decimal(&#x27;40&#x27;), &#x27;improvement_per_budget&#x27;: Decimal(&#x27;2&#x27;)}
+{&#x27;run_id&#x27;: &#x27;r3&#x27;, &#x27;method&#x27;: &#x27;synthetic-zero&#x27;, &#x27;budget&#x27;: 0, &#x27;best_loss&#x27;: 50, &#x27;improvement&#x27;: Decimal(&#x27;0&#x27;), &#x27;improvement_per_budget&#x27;: None}
+</pre>
+</div>
+<h3>Checks</h3>
+<h3>Validate local fixture and oracle</h3>
+<p>These checks do not validate PostgreSQL semantics or execute SQL.</p>
+<div class="cell"><div class="cell-label">CODE CELL 4</div><pre>companion.check()
+</pre>
+<div class="cell-label">RETAINED STDOUT</div><pre class="output">PASS: fixture counts; Decimal oracle; empty input; deterioration; CSV; notebook code syntax.
+These are Python checks, not PostgreSQL execution.
+</pre>
+</div>
+<h3>Execute the real PostgreSQL pipeline when available</h3>
+<p>The next cell executes in the separately saved companion.executed.ipynb. It fails explicitly if psql is absent. It writes real version/test/plan evidence and actual_summary.csv only after connecting to the authorized local database.</p>
+<div class="cell"><div class="cell-label">CODE CELL 5</div><pre># Requires existing local authorization and libpq connection settings.
+companion.run()
+print(Path(&#x27;actual_summary.csv&#x27;).read_text())
+# Keep notebook evidence bounded: assertion notices and measured timing only.
+for line in Path(&#x27;postgres_results.txt&#x27;).read_text().splitlines():
+    if &#x27;PASS&#x27; in line or &#x27;Planning Time:&#x27; in line or &#x27;Execution Time:&#x27; in line:
+        print(line)
+</pre>
+<div class="cell-label">RETAINED STDOUT</div><pre class="output">PASS PostgreSQL assertions and independently reconciled actual_summary.csv.
+run_id,method,budget,best_loss,improvement,improvement_per_budget
+r1,synthetic-a,10,60,40,4.0000000000000000
+r2,synthetic-b,20,60,40,2.0000000000000000
+r3,synthetic-zero,0,50,0,
+
+psql:[project]/tests.sql:35: NOTICE:  PASS exact replay idempotency
+psql:[project]/tests.sql:35: NOTICE:  PASS function hand calculation and zero budget
+psql:[project]/tests.sql:35: NOTICE:  PASS no-checkpoint fallback
+psql:[project]/tests.sql:35: NOTICE:  PASS empty and unknown batch
+psql:[project]/tests.sql:35: NOTICE:  PASS known CTE/window result
+psql:[project]/tests.sql:62: NOTICE:  PASS rejection and rollback: test-orphan (SQLSTATE P0001)
+psql:[project]/tests.sql:64: NOTICE:  PASS rejection and rollback: test-duplicate-run (SQLSTATE 23505)
+psql:[project]/tests.sql:66: NOTICE:  PASS rejection and rollback: test-late-failure (SQLSTATE 23514)
+psql:[project]/tests.sql:68: NOTICE:  PASS rejection and rollback: test-duplicate-checkpoint (SQLSTATE 23505)
+psql:[project]/tests.sql:69: NOTICE:  PASS rejection and rollback: synthetic-v1 (SQLSTATE P0001)
+psql:[project]/tests.sql:70: NOTICE:  PASS rejection and rollback: test-shape (SQLSTATE P0001)
+ Planning Time: 0.301 ms
+ Execution Time: 0.049 ms
+ Planning Time: 0.093 ms
+ Execution Time: 0.040 ms
+PASS actual PostgreSQL CSV independently reconciled to Decimal oracle.
+</pre>
+</div>
+<h3>Next steps</h3>
+<p>Inspect schema.sql, tests.sql, analysis.sql, postgres_results.txt and the CSVs. Explain exact replay identity, transaction rollback, the run/checkpoint grain, NULL handling for zero budget, and the running-minimum window frame. These tiny-fixture observations do not establish throughput or scalability.</p>
+</section><footer>Public sanitized copy · Original execution dated 2026-10-01 UTC · Host paths redacted, code and numeric outputs preserved<br>Open README.md for reproduction instructions, limits and the evidence inventory.</footer></main></body></html>
